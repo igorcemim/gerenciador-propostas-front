@@ -13,7 +13,7 @@ import {
   Router
 } from '@angular/router';
 import {
-  forkJoin
+  forkJoin, Observable
 } from 'rxjs';
 import {
   ContatoService
@@ -28,7 +28,7 @@ import {
   styleUrls: ['./manutencao-propostas.component.scss']
 })
 export class ManutencaoPropostas implements OnInit {
-  id: string;
+  id: number;
   titulo: string = 'Editar';
   proposta: Proposta = new Proposta();
   carregado: boolean = false;
@@ -59,28 +59,23 @@ export class ManutencaoPropostas implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.paramMap
-      .subscribe(params => {
-        this.id = params.get('id') || null;
-        if (this.id === null) {
-          forkJoin(
-            this.clienteService.listarContatos()
-          ).subscribe(resultado => {
-            this.listaClientes = resultado[0];
-            this.carregado = true;
-            this.titulo = 'Adicionar';
-          });
-          return;
-        }
+    this.route.paramMap.subscribe(params => {
+      this.id = Number.parseInt(params.get('id')) || null;
 
-        forkJoin(
-          this.retornar(Number.parseInt(this.id)),
-          this.clienteService.listarContatos(),
-        ).subscribe(resultado => {
-          this.proposta = resultado[0];
-          this.listaClientes = resultado[1];
+      const requests = [];
+      if (this.id) {
+        requests.push(this.clienteService.listarContatos());
+        requests.push(this.retornar(this.id));
+      } else {
+        requests.push(this.clienteService.listarContatos())
+      }
+
+      return forkJoin(...requests)
+        .subscribe(responses => {
+          this.titulo = 'Adicionar';
+          this.listaClientes = !!responses[0] ? responses[0] : this.listaClientes;
+          this.proposta = !!responses[1] ? responses[1] : this.proposta;
           this.carregado = true;
-          this.titulo = 'Editar';
         });
       });
   }

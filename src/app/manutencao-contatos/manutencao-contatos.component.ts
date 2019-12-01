@@ -18,7 +18,7 @@ export class ManutencaoContatosComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router,private clienteService: ContatoService){
 
   }
-  
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.id = params.get('id');
@@ -27,12 +27,13 @@ export class ManutencaoContatosComponent implements OnInit {
         .subscribe(clienteRetornado =>{
           console.log(clienteRetornado);
           this.contato = clienteRetornado;
+          this.carregado = true;
         });
       } else {
         this.titulo = 'Adicionar';
+        this.carregado = true;
       }
     }).unsubscribe();
-    this.carregado = true;
   }
 
   voltar() {

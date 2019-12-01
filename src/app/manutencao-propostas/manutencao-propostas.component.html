@@ -4,7 +4,7 @@
     <div *ngIf="proposta.id !== null">
       <h4>ID : {{proposta.id}}</h4>
     </div>
-    
+
     <div class="form-group">
       <input class="form-control" type="hidden" [(value)]="proposta.id">
     </div>
@@ -37,4 +37,7 @@
     <button class="btn btn-primary" (click)="salvar(proposta)">Salvar</button>
     <button class="btn btn-secondary mx-1" (click)="voltar()">Voltar</button>
   </form>
+</div>
+<div *ngIf="!carregado">
+  Carregando...
 </div>
