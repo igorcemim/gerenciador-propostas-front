@@ -29,10 +29,6 @@ export class ListagemContatosComponent implements OnInit {
 
   editar(contato: Contato) {
     this.router.navigateByUrl(`clientes/detalhes/${contato.id}`);
-    // this.contatoService.editarContato(contato, contato.id)
-    // .subscribe( dados => {
-    //   console.log(dados);
-    // });
   }
 
   remover(id: number) {

@@ -58,26 +58,28 @@ export class ManutencaoPropostas implements OnInit {
     private clienteService: ContatoService
   ) {}
 
+  inicializar(proposta, contatos) {
+    this.titulo = 'Adicionar';
+    this.listaClientes = !!contatos ? contatos : this.listaClientes;
+    this.proposta = !!proposta ? proposta : this.proposta;
+    this.carregado = true;
+  }
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.id = Number.parseInt(params.get('id')) || null;
 
-      const requests = [];
       if (this.id) {
-        requests.push(this.clienteService.listarContatos());
-        requests.push(this.retornar(this.id));
+        return forkJoin({
+          proposta: this.retornar(this.id),
+          contatos: this.clienteService.listarContatos()
+        })
+        .subscribe(resultado => this.inicializar(resultado.proposta, resultado.contatos));
       } else {
-        requests.push(this.clienteService.listarContatos())
+        return this.clienteService.listarContatos()
+        .subscribe(contatos => this.inicializar(null, contatos));
       }
-
-      return forkJoin(...requests)
-        .subscribe(responses => {
-          this.titulo = 'Adicionar';
-          this.listaClientes = !!responses[0] ? responses[0] : this.listaClientes;
-          this.proposta = !!responses[1] ? responses[1] : this.proposta;
-          this.carregado = true;
-        });
-      });
+    });
   }
 
   voltar() {

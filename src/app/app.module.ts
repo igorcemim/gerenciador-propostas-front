@@ -16,6 +16,8 @@ import { PropostaService } from './service/proposta.service';
 import { ContatoService } from './service/contato.service';
 import { ManutencaoContatosComponent } from './manutencao-contatos/manutencao-contatos.component';
 
+import { NgxMaskModule } from 'ngx-mask'
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,13 +25,14 @@ import { ManutencaoContatosComponent } from './manutencao-contatos/manutencao-co
     ListagemContatosComponent,
     ManutencaoPropostas,
     NavbarComponent,
-    ManutencaoContatosComponent
+    ManutencaoContatosComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxMaskModule.forRoot(),
   ],
   providers: [ContatoService, PropostaService],
   bootstrap: [AppComponent]
